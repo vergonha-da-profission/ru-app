@@ -9,16 +9,34 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
-        // padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-        // color: Color(#f5b461),
-        color: Color(0xFF868686),
-        // width: double.infinity,
+        color: Color(0xFFFFFF),
         child: ListView(
-          // mainAxisSize: MainAxisSize.max,
-          // scrollDirection: Axis.vertical,
           children: [
             _MainImage(),
-            SizedBox(height: 40),
+            Container(
+              padding: _Const.formMargin,
+              margin: const EdgeInsets.only(top: 30),
+              child: Text(
+                'Bem vindo,',
+                style: GoogleFonts.roboto(
+                    fontSize: 40,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xFF3c3c3c)),
+              ),
+            ),
+            Container(
+              padding: _Const.formMargin,
+              margin: const EdgeInsets.only(top: 8),
+              child: Text(
+                'Entre para continuar!',
+                style: GoogleFonts.roboto(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF939393),
+                ),
+              ),
+            ),
+            SizedBox(height: 60),
             MyCustomForm(),
           ],
         ),
@@ -35,9 +53,9 @@ class _MainImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment.center,
+      alignment: Alignment.topLeft,
       child: Container(
-        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * .06),
+        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * .05),
         child: Container(
           height: _Const.imageWidth,
           width: _Const.imageHeight,
@@ -73,6 +91,7 @@ class MyCustomFormState extends State<MyCustomForm> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             _UsernameInput(),
+            SizedBox(height: 20),
             _PasswordInput(),
             _LoginFormButton(formKey: _formKey),
           ],
@@ -97,12 +116,9 @@ class _LoginFormButton extends StatelessWidget {
       alignment: Alignment.center,
       child: Container(
         padding: _Const.buttonOutterPading,
-        margin: _Const.buttonOutterMargin,
+        margin: EdgeInsets.only(top: 30),
         child: FlatButton(
           color: Color(_Const.buttonBackgroundColor),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(_Const.buttonRadius),
-          ),
           onPressed: () {
             if (_formKey.currentState.validate()) {
               Scaffold.of(context).showSnackBar(
@@ -110,7 +126,7 @@ class _LoginFormButton extends StatelessWidget {
             }
           },
           child: Container(
-            width: _Const.buttonWidth,
+            width: MediaQuery.of(context).size.width * .9,
             height: _Const.buttonHeight,
             child: Center(
               child: Text(_Const.buttonText, style: _Const.buttonStyle),
@@ -123,12 +139,9 @@ class _LoginFormButton extends StatelessWidget {
 }
 
 abstract class _Const {
-  static const buttonBackgroundColor = 0xFFfed9ca;
-  static const buttonRadius = 60.0;
+  static const buttonBackgroundColor = 0xFF939393;
   static const buttonOutterPading = const EdgeInsets.symmetric(vertical: 16.0);
-  static const buttonOutterMargin = const EdgeInsets.only(bottom: 20);
-  static const double buttonWidth = 70;
-  static const double buttonHeight = 50;
+  static const double buttonHeight = 60;
   static const String buttonText = "Entrar";
   static final buttonStyle = GoogleFonts.notoSans(
     fontSize: 16,
@@ -136,19 +149,19 @@ abstract class _Const {
     color: Color(0xAA43414e),
   );
 
-  static const double imageHeight = 200;
-  static const double imageWidth = 200;
+  static const double imageHeight = 150;
+  static const double imageWidth = 100;
   static const String imageName =
       'https://avatars0.githubusercontent.com/u/71855737?s=400&u=76011f1a14e05ffb46bcf1e701c374300c4d1b54&v=4';
   static const formMargin = const EdgeInsets.symmetric(horizontal: 40);
 
-  static const String passwordHint = 'Senha';
+  static const String passwordHint = 'Escreva sua senha';
   static const String loginHint = 'Login';
 
   static final inputHintStyle = GoogleFonts.notoSans(
     fontSize: 16,
     fontWeight: FontWeight.w600,
-    color: Color(0xFFfed9ca),
+    color: Color(0xFF939393),
   );
 }
 
@@ -161,39 +174,55 @@ class _PasswordInput extends StatelessWidget {
   Widget build(BuildContext context) {
     bool _showText = false;
 
-    return StatefulBuilder(builder: (BuildContext context, setState) {
-      return TextFormField(
-        obscureText: !_showText,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          icon: Icon(
-            Icons.lock_outline_rounded,
-            color: Color(_Const.buttonBackgroundColor),
-          ),
-          suffixIcon: IconButton(
-            onPressed: () => setState(() => _showText = !_showText),
-            icon: Icon(
-              _showText
-                  ? Icons.visibility_off_outlined
-                  : Icons.remove_red_eye_outlined,
-              color: Color(_Const.buttonBackgroundColor),
-            ),
-          ),
-          hintText: _Const.passwordHint,
-          hintStyle: _Const.inputHintStyle,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Senha',
+          style: GoogleFonts.roboto(fontSize: 18, fontWeight: FontWeight.w500),
         ),
-        validator: (value) {
-          if (value.isEmpty) {
-            return 'Digite uma senha válida.';
-          }
-          return null;
-        },
-        textInputAction: TextInputAction.done,
-        onEditingComplete: () {
-          FocusScope.of(context).unfocus();
-        },
-      );
-    });
+        StatefulBuilder(builder: (BuildContext context, setState) {
+          return TextFormField(
+            obscureText: !_showText,
+            decoration: InputDecoration(
+              enabledBorder: new UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color(0xFF939393),
+                  width: 1,
+                ),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.orange,
+                  width: 1,
+                ),
+              ),
+              suffixIcon: IconButton(
+                onPressed: () => setState(() => _showText = !_showText),
+                icon: Icon(
+                  _showText
+                      ? Icons.visibility_off_outlined
+                      : Icons.remove_red_eye_outlined,
+                  color: Color(_Const.buttonBackgroundColor),
+                ),
+              ),
+              hintText: _Const.passwordHint,
+              hintStyle: _Const.inputHintStyle,
+            ),
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Digite uma senha válida.';
+              }
+              return null;
+            },
+            textInputAction: TextInputAction.done,
+            onEditingComplete: () {
+              FocusScope.of(context).unfocus();
+            },
+          );
+        }),
+      ],
+    );
   }
 }
 
@@ -204,25 +233,40 @@ class _UsernameInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      autofocus: true,
-      decoration: InputDecoration(
-        border: InputBorder.none,
-        icon: Icon(
-          Icons.person_outline_outlined,
-          color: Color(0xFFfed9ca),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Usuário',
+            style:
+                GoogleFonts.roboto(fontSize: 18, fontWeight: FontWeight.w500)),
+        TextFormField(
+          autofocus: true,
+          decoration: InputDecoration(
+            enabledBorder: new UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: Color(0xFF939393),
+                width: 1,
+              ),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.orange,
+                width: 1,
+              ),
+            ),
+            hintText: _Const.loginHint,
+            hintStyle: _Const.inputHintStyle,
+          ),
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'Por favor, digite um idUFFS ou um CPF válido.';
+            }
+            return null;
+          },
+          textInputAction: TextInputAction.next,
+          onEditingComplete: () => FocusScope.of(context).nextFocus(),
         ),
-        hintText: _Const.loginHint,
-        hintStyle: _Const.inputHintStyle,
-      ),
-      validator: (value) {
-        if (value.isEmpty) {
-          return 'Por favor, digite um idUFFS ou um CPF válido.';
-        }
-        return null;
-      },
-      textInputAction: TextInputAction.next,
-      onEditingComplete: () => FocusScope.of(context).nextFocus(),
+      ],
     );
   }
 }
