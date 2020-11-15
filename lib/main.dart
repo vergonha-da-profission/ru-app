@@ -20,12 +20,6 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'RU',
-      // theme: ThemeData(
-      //   primaryColor: Color(0xFF6C5B7B),
-      //   accentColor: Color(0xFFC06C84),
-      //   brightness: Brightness.dark,
-      // ),
-      // routes: routes,
       home: MultiBlocProvider(
         providers: [
           BlocProvider<AuthenticationBloc>(

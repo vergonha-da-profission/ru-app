@@ -23,3 +23,5 @@ class LoginButtonPressed extends LoginEvent {
   String toString() =>
       'LoginButtonPressed { username: $username, password: $password }';
 }
+
+class LoginLogout extends LoginEvent {}

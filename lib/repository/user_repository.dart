@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class UserRepository {
   static Future<String> authenticate({
@@ -40,20 +41,21 @@ abstract class UserRepository {
   }
 
   static Future<void> deleteToken() async {
-    /// delete from keystore/keychain
     await Future.delayed(Duration(seconds: 1));
     return;
   }
 
   static Future<void> persistToken(String token) async {
-    /// write to keystore/keychain
-    await Future.delayed(Duration(seconds: 1));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', token);
+
     return;
   }
 
   static Future<bool> hasToken() async {
-    /// read from keystore/keychain
-    await Future.delayed(Duration(seconds: 1));
-    return false;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final token = prefs.getString("token");
+    return token == null;
   }
 }
