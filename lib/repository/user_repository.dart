@@ -1,12 +1,42 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 
 abstract class UserRepository {
   static Future<String> authenticate({
     @required String username,
     @required String password,
   }) async {
-    await Future.delayed(Duration(seconds: 1));
-    return 'token';
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    try {
+      final res = await http
+          .post(
+            'https://reqres.in/api/login',
+            headers: headers,
+            body: jsonEncode({
+              "email": username,
+              "password": password,
+            }),
+          )
+          .timeout(Duration(seconds: 3));
+
+      if (res.statusCode != 200 && res.statusCode != 400)
+        throw Exception('http.post error: statusCode= ${res.statusCode}');
+
+      // Password or user incorrect
+      if (res.statusCode == 400) return null;
+
+      final decodedResponse = jsonDecode(res.body)["token"];
+
+      return decodedResponse;
+    } catch (error) {
+      print(error);
+      throw error;
+    }
   }
 
   static Future<void> deleteToken() async {

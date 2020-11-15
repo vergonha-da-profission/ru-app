@@ -34,37 +34,40 @@ class _LoginScreenState extends Screen {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
-        color: Color(0xFFFFFF),
-        child: ListView(
-          children: [
-            _MainImage(),
-            Container(
-              padding: _Const.formMargin,
-              margin: const EdgeInsets.only(top: 30),
-              child: Text(
-                'Bem vindo,',
-                style: GoogleFonts.roboto(
-                    fontSize: 40,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xFF3c3c3c)),
-              ),
-            ),
-            Container(
-              padding: _Const.formMargin,
-              margin: const EdgeInsets.only(top: 8),
-              child: Text(
-                'Entre para continuar!',
-                style: GoogleFonts.roboto(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFF939393),
+      body: BlocProvider(
+        create: (context) => _loginBloc,
+        child: Container(
+          color: Color(0xFFFFFF),
+          child: ListView(
+            children: [
+              _MainImage(),
+              Container(
+                padding: _Const.formMargin,
+                margin: const EdgeInsets.only(top: 30),
+                child: Text(
+                  'Bem vindo,',
+                  style: GoogleFonts.roboto(
+                      fontSize: 40,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xFF3c3c3c)),
                 ),
               ),
-            ),
-            SizedBox(height: 60),
-            MyCustomForm(loginBloc: _loginBloc),
-          ],
+              Container(
+                padding: _Const.formMargin,
+                margin: const EdgeInsets.only(top: 8),
+                child: Text(
+                  'Entre para continuar!',
+                  style: GoogleFonts.roboto(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF939393),
+                  ),
+                ),
+              ),
+              SizedBox(height: 60),
+              MyCustomForm(loginBloc: _loginBloc),
+            ],
+          ),
         ),
       ),
     );
@@ -117,30 +120,58 @@ class MyCustomFormState extends State<MyCustomForm> {
     if (_formKey.currentState.validate()) {
       // Scaffold.of(context).showSnackBar(
       //     SnackBar(content: Text('Enviando informações')));
-      this.widget.loginBloc.add(LoginButtonPressed(
-            username: _usernameController.text,
-            password: _passwordController.text,
-          ));
+      this.widget.loginBloc.add(
+            LoginButtonPressed(
+              username: _usernameController.text,
+              password: _passwordController.text,
+            ),
+          );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: _Const.formMargin,
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _UsernameInput(_usernameController),
-            SizedBox(height: 20),
-            _PasswordInput(_passwordController),
-            _LoginFormButton(submitForm: _submitForm),
-          ],
-        ),
-      ),
+    return BlocBuilder<LoginBloc, LoginState>(
+      builder: (context, state) {
+        if (state is LoginFailure) {
+          final message = state.error.contains('incorrect')
+              ? "Usuário ou senha incorretos"
+              : state.error;
+
+          _passwordController.clear();
+          _onWidgetDidBuild(() {
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text(message),
+                backgroundColor: Colors.red,
+              ),
+            );
+          });
+        }
+
+        return Container(
+          margin: _Const.formMargin,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _UsernameInput(_usernameController),
+                SizedBox(height: 20),
+                _PasswordInput(_passwordController),
+                _LoginFormButton(submitForm: _submitForm),
+              ],
+            ),
+          ),
+        );
+      },
     );
+  }
+
+  void _onWidgetDidBuild(Function callback) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      callback();
+    });
   }
 }
 
