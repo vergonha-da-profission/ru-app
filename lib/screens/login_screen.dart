@@ -1,8 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ru/bloc/authentication/authentication_bloc.dart';
+import 'package:ru/bloc/login/login_bloc.dart';
+import 'package:ru/util/screen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({Key key}) : super(key: key);
+
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends Screen {
+  LoginBloc _loginBloc;
+
+  @override
+  dispose() {
+    _loginBloc.close();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    _loginBloc = LoginBloc(
+      authenticationBloc: BlocProvider.of<AuthenticationBloc>(context),
+    );
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +63,7 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 60),
-            MyCustomForm(),
+            MyCustomForm(loginBloc: _loginBloc),
           ],
         ),
       ),
@@ -72,6 +98,10 @@ class _MainImage extends StatelessWidget {
 
 // Create a Form widget.
 class MyCustomForm extends StatefulWidget {
+  final LoginBloc loginBloc;
+
+  const MyCustomForm({Key key, this.loginBloc}) : super(key: key);
+
   @override
   MyCustomFormState createState() {
     return MyCustomFormState();
@@ -80,6 +110,19 @@ class MyCustomForm extends StatefulWidget {
 
 class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  void _submitForm() {
+    if (_formKey.currentState.validate()) {
+      // Scaffold.of(context).showSnackBar(
+      //     SnackBar(content: Text('Enviando informações')));
+      this.widget.loginBloc.add(LoginButtonPressed(
+            username: _usernameController.text,
+            password: _passwordController.text,
+          ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,10 +133,10 @@ class MyCustomFormState extends State<MyCustomForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _UsernameInput(),
+            _UsernameInput(_usernameController),
             SizedBox(height: 20),
-            _PasswordInput(),
-            _LoginFormButton(formKey: _formKey),
+            _PasswordInput(_passwordController),
+            _LoginFormButton(submitForm: _submitForm),
           ],
         ),
       ),
@@ -104,11 +147,10 @@ class MyCustomFormState extends State<MyCustomForm> {
 class _LoginFormButton extends StatelessWidget {
   const _LoginFormButton({
     Key key,
-    @required GlobalKey<FormState> formKey,
-  })  : _formKey = formKey,
-        super(key: key);
+    @required this.submitForm,
+  }) : super(key: key);
 
-  final GlobalKey<FormState> _formKey;
+  final Function submitForm;
 
   @override
   Widget build(BuildContext context) {
@@ -119,12 +161,7 @@ class _LoginFormButton extends StatelessWidget {
         margin: EdgeInsets.only(top: 30),
         child: FlatButton(
           color: Color(_Const.buttonBackgroundColor),
-          onPressed: () {
-            if (_formKey.currentState.validate()) {
-              Scaffold.of(context).showSnackBar(
-                  SnackBar(content: Text('Enviando informações')));
-            }
-          },
+          onPressed: submitForm,
           child: Container(
             width: MediaQuery.of(context).size.width * .9,
             height: _Const.buttonHeight,
@@ -166,9 +203,12 @@ abstract class _Const {
 }
 
 class _PasswordInput extends StatelessWidget {
-  const _PasswordInput({
+  const _PasswordInput(
+    this.passwordController, {
     Key key,
   }) : super(key: key);
+
+  final TextEditingController passwordController;
 
   @override
   Widget build(BuildContext context) {
@@ -183,6 +223,7 @@ class _PasswordInput extends StatelessWidget {
         ),
         StatefulBuilder(builder: (BuildContext context, setState) {
           return TextFormField(
+            controller: passwordController,
             obscureText: !_showText,
             decoration: InputDecoration(
               enabledBorder: new UnderlineInputBorder(
@@ -227,9 +268,12 @@ class _PasswordInput extends StatelessWidget {
 }
 
 class _UsernameInput extends StatelessWidget {
-  const _UsernameInput({
+  const _UsernameInput(
+    this.usernameController, {
     Key key,
   }) : super(key: key);
+
+  final TextEditingController usernameController;
 
   @override
   Widget build(BuildContext context) {
@@ -240,6 +284,7 @@ class _UsernameInput extends StatelessWidget {
             style:
                 GoogleFonts.roboto(fontSize: 18, fontWeight: FontWeight.w500)),
         TextFormField(
+          controller: usernameController,
           autofocus: true,
           decoration: InputDecoration(
             enabledBorder: new UnderlineInputBorder(

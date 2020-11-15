@@ -11,6 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
   google_fonts: ^1.1.1
+  flutter_bloc: ^6.1.1
+  equatable: ^1.2.5
+  bloc: ^6.1.0
 
   cupertino_icons: ^1.0.0
 
