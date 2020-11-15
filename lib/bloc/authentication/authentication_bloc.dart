@@ -18,8 +18,6 @@ class AuthenticationBloc
     if (event is AppStarted) {
       final bool hasToken = await UserRepository.hasToken();
 
-      print(hasToken);
-
       if (hasToken) {
         yield AuthenticationAuthenticated();
       } else {

@@ -28,7 +28,6 @@ class MyApp extends StatelessWidget {
         ],
         child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (context, state) {
-            print(state);
             if (state is AuthenticationInitial) {
               return SplashScreen();
             }

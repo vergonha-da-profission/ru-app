@@ -36,6 +36,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           throw Exception('Password or username incorrect.');
         }
 
+        await UserRepository.persistToken(token);
+
         authenticationBloc.add(LoggedIn(token: token));
         yield LoginInitial();
       } catch (error) {

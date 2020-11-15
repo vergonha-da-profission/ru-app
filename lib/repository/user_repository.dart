@@ -35,7 +35,6 @@ abstract class UserRepository {
 
       return decodedResponse;
     } catch (error) {
-      print(error);
       throw error;
     }
   }
@@ -56,6 +55,7 @@ abstract class UserRepository {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final token = prefs.getString("token");
-    return token == null;
+
+    return token != null;
   }
 }
