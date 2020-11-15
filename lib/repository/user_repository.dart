@@ -22,7 +22,7 @@ abstract class UserRepository {
               "password": password,
             }),
           )
-          .timeout(Duration(seconds: 3));
+          .timeout(Duration(seconds: 10));
 
       if (res.statusCode != 200 && res.statusCode != 400)
         throw Exception('http.post error: statusCode= ${res.statusCode}');

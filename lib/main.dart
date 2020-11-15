@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ru/screens/home_screen.dart';
 import 'package:ru/screens/login_screen.dart';
 import 'package:ru/screens/spash_screen.dart';
+import 'package:ru/shared/custom_circular_loading.dart';
 
 import 'bloc/authentication/authentication_bloc.dart';
 
@@ -43,10 +44,7 @@ class MyApp extends StatelessWidget {
             if (state is AuthenticationUnauthenticated) {
               return LoginScreen();
             }
-            // if (state is AuthenticationLoading) {
-
-            return CircularProgressIndicator();
-            // }
+            return CustomCircularLoading();
           },
         ),
       ),
