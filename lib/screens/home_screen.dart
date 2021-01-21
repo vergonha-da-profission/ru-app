@@ -84,11 +84,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Container(
         padding: MediaQuery.of(context).padding,
-        child: Column(
+        child: Stack(
           children: [
             _AppBar(onTapped: _onItemTapped),
-            Center(
-              child: _widgetOptions.elementAt(_selectedIndex),
+            Container(
+              margin: EdgeInsets.only(top: AppBar().preferredSize.height),
+              child: Center(
+                child: _widgetOptions.elementAt(_selectedIndex),
+              ),
             ),
           ],
         ),
@@ -291,48 +294,128 @@ class _AppBar extends StatelessWidget {
       fontSize: 18,
     );
 
-    return Container(
-      width: size.width,
-      color: Theme.of(context).accentColor,
-      height: size.height,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          InkWell(
-            onTap: () {
-              onTapped(3);
-            },
-            child: Text(
-              'Carteira',
-              style: style,
-            ),
+    return Column(
+      children: [
+        Container(
+          width: size.width,
+          color: Theme.of(context).accentColor,
+          height: size.height,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              InkWell(
+                onTap: () {
+                  onTapped(3);
+                },
+                child: Text(
+                  'Carteira',
+                  style: style,
+                ),
+              ),
+              InkWell(
+                child: Text(
+                  "R\$ 0,25",
+                  style: style,
+                ),
+                onTap: () {
+                  onTapped(1);
+                },
+              ),
+              InkWell(
+                child: Text(
+                  'Perfil',
+                  style: style,
+                ),
+                onTap: () {
+                  onTapped(2);
+                },
+              ),
+            ],
           ),
-          InkWell(
-            child: Text(
-              "R\$ 0,25",
-              style: style,
-            ),
-            onTap: () {
-              onTapped(1);
-            },
-          ),
-          InkWell(
-            child: Text(
-              'Perfil',
-              style: style,
-            ),
-            onTap: () {
-              onTapped(2);
-            },
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
 
 class Transactions extends StatelessWidget {
   const Transactions({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final items = [
+      {
+        "incoming": false,
+        "transactionName": 'Ticket',
+        "transactionType": 'Restaurante universitário',
+        "amount": 2.5,
+        "transactionTime": '30 min',
+      },
+      {
+        "incoming": true,
+        "transactionName": 'Depósito na carteira',
+        "transactionType": 'Cartão de Crédito',
+        "amount": 50.0,
+        "transactionTime": '60 min',
+      },
+      {
+        "incoming": true,
+        "transactionName": 'Depósito na carteira',
+        "transactionType": 'Boleto bancário',
+        "amount": 10.0,
+        "transactionTime": '90 min',
+      },
+      {
+        "incoming": false,
+        "transactionName": 'Ticket',
+        "transactionType": 'Restaurante universitário',
+        "amount": 2.5,
+        "transactionTime": '1 dia',
+      }
+    ];
+
+    return Flex(
+      direction: Axis.vertical,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          // height: MediaQuery.of(context).size.height - size.height,
+          child: ListView.builder(
+            padding: EdgeInsets.only(top: 10),
+            itemCount: items.length,
+            itemBuilder: (BuildContext context, int index) {
+              return _TransactionItem(
+                amount: items[index]["amount"],
+                transactionName: items[index]["transactionName"],
+                transactionTime: items[index]["transactionTime"],
+                transactionType: items[index]["transactionType"],
+                incoming: items[index]["incoming"],
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TransactionItem extends StatelessWidget {
+  const _TransactionItem({
+    Key key,
+    bool incoming,
+    @required this.amount,
+    @required this.transactionName,
+    @required this.transactionType,
+    @required this.transactionTime,
+  })  : this.incoming = incoming ?? true,
+        super(key: key);
+
+  final bool incoming;
+  final String transactionName;
+  final double amount;
+  final String transactionType;
+  final String transactionTime;
 
   @override
   Widget build(BuildContext context) {
@@ -351,7 +434,7 @@ class Transactions extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Depósito na carteira',
+                      this.transactionName,
                       style: GoogleFonts.roboto(
                         fontSize: 22,
                         fontWeight: FontWeight.w500,
@@ -359,7 +442,7 @@ class Transactions extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      'R\$ 5,00',
+                      'R\$ ${amount.toStringAsFixed(2).replaceFirst('.', ',')}',
                       style: GoogleFonts.roboto(
                         fontSize: 18,
                         fontWeight: FontWeight.w400,
@@ -367,7 +450,7 @@ class Transactions extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      'Cartão de Crédito',
+                      this.transactionType,
                       style: GoogleFonts.roboto(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
@@ -380,7 +463,7 @@ class Transactions extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      '15 minutos',
+                      'Há ${this.transactionTime}',
                       style: GoogleFonts.roboto(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
@@ -388,8 +471,9 @@ class Transactions extends StatelessWidget {
                     ),
                     Expanded(child: SizedBox()),
                     SvgPicture.asset(
-                      'assets/svg/outgoing_payments.svg',
+                      "assets/svg/${incoming ? "incoming_payments" : "outgoing_payments"}.svg",
                       width: 80,
+                      color: incoming ? Colors.green : Colors.red,
                     ),
                   ],
                 ),
