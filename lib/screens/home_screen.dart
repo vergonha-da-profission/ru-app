@@ -49,6 +49,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -63,15 +64,13 @@ class _HomeScreenState extends State<HomeScreen> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
+    Transactions(),
     HomeSection(),
     Text(
       'Index 2: School',
       style: optionStyle,
     ),
+    Wallet(),
   ];
 
   void _onItemTapped(int index) {
@@ -83,11 +82,16 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('BottomNavigationBar Sample'),
-      ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+      body: Container(
+        padding: MediaQuery.of(context).padding,
+        child: Column(
+          children: [
+            _AppBar(onTapped: _onItemTapped),
+            Center(
+              child: _widgetOptions.elementAt(_selectedIndex),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -104,9 +108,71 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Perfil',
           ),
         ],
-        currentIndex: _selectedIndex,
+        currentIndex: _selectedIndex < 3 ? _selectedIndex : _selectedIndex - 1,
         selectedItemColor: Colors.amber[800],
         onTap: _onItemTapped,
+      ),
+    );
+  }
+}
+
+class Wallet extends StatelessWidget {
+  const Wallet({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 40),
+      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * .25),
+      child: Column(
+        children: [
+          Text(
+            'Quanto	você	deseja	abastecer?',
+            style: GoogleFonts.roboto(
+              fontSize: 23,
+            ),
+          ),
+          TextField(
+            decoration: InputDecoration(
+              hintText: '0,00',
+            ),
+            textAlign: TextAlign.center,
+            style: GoogleFonts.roboto(
+              fontSize: 23,
+            ),
+          ),
+          PaymentArea()
+        ],
+      ),
+    );
+  }
+}
+
+class PaymentArea extends StatelessWidget {
+  const PaymentArea({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 30),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          SvgPicture.asset(
+            'assets/svg/card.svg',
+            semanticsLabel: 'Card',
+            width: 100,
+          ),
+          SvgPicture.asset(
+            'assets/svg/bank.svg',
+            semanticsLabel: 'Card',
+            width: 100,
+          ),
+        ],
       ),
     );
   }
@@ -117,21 +183,30 @@ class HomeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          _ProfilePicture(
-            imageUrl: 'http://placekitten.com/200/300',
+    return Column(
+      children: [
+        DefaultTabController(
+          // The number of tabs / content sections to display.
+          length: 3,
+          child: Container(), // Complete this code in the next step.
+        ),
+        Container(
+          child: Column(
+            children: [
+              _ProfilePicture(
+                imageUrl: 'http://placekitten.com/200/300',
+              ),
+              _UserName(
+                name: 'Name teste',
+              ),
+              _QrCode(
+                imageUrl:
+                    'http://www.pngall.com/wp-content/uploads/2/QR-Code-PNG-Clipart.png',
+              ),
+            ],
           ),
-          _UserName(
-            name: 'Name teste',
-          ),
-          _QrCode(
-            imageUrl:
-                'http://www.pngall.com/wp-content/uploads/2/QR-Code-PNG-Clipart.png',
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -169,7 +244,7 @@ class _QrCode extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 20),
+      margin: EdgeInsets.only(top: 10),
       width: MediaQuery.of(context).size.width * .7,
       height: MediaQuery.of(context).size.width * .7,
       child: Image.network(imageUrl),
@@ -195,6 +270,132 @@ class _ProfilePicture extends StatelessWidget {
         child: Image.network(
           this.imageUrl,
           fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+}
+
+class _AppBar extends StatelessWidget {
+  const _AppBar({Key key, this.onTapped}) : super(key: key);
+
+  final Function onTapped;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = AppBar().preferredSize;
+
+    final style = GoogleFonts.roboto(
+      color: Colors.white,
+      fontWeight: FontWeight.w400,
+      fontSize: 18,
+    );
+
+    return Container(
+      width: size.width,
+      color: Theme.of(context).accentColor,
+      height: size.height,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          InkWell(
+            onTap: () {
+              onTapped(3);
+            },
+            child: Text(
+              'Carteira',
+              style: style,
+            ),
+          ),
+          InkWell(
+            child: Text(
+              "R\$ 0,25",
+              style: style,
+            ),
+            onTap: () {
+              onTapped(1);
+            },
+          ),
+          InkWell(
+            child: Text(
+              'Perfil',
+              style: style,
+            ),
+            onTap: () {
+              onTapped(2);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Transactions extends StatelessWidget {
+  const Transactions({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 140,
+      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      child: Card(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Depósito na carteira',
+                      style: GoogleFonts.roboto(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'R\$ 5,00',
+                      style: GoogleFonts.roboto(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Cartão de Crédito',
+                      style: GoogleFonts.roboto(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                child: Column(
+                  children: [
+                    Text(
+                      '15 minutos',
+                      style: GoogleFonts.roboto(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    Expanded(child: SizedBox()),
+                    SvgPicture.asset(
+                      'assets/svg/outgoing_payments.svg',
+                      width: 80,
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
