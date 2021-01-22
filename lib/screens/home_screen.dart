@@ -4,6 +4,8 @@ import 'package:flutter_credit_card/credit_card_model.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:share/share.dart';
+import 'package:clipboard_manager/clipboard_manager.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -127,10 +129,22 @@ class PaymentArea extends StatelessWidget {
               width: 100,
             ),
           ),
-          SvgPicture.asset(
-            'assets/svg/bank.svg',
-            semanticsLabel: 'Card',
-            width: 100,
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => BankSilkScreen(
+                          pdfString:
+                              '34191.79001 01043.510047 91020.150008 4 85070026000',
+                        )),
+              );
+            },
+            child: SvgPicture.asset(
+              'assets/svg/bank.svg',
+              semanticsLabel: 'Card',
+              width: 100,
+            ),
           ),
         ],
       ),
@@ -565,49 +579,6 @@ class _ProfileImageSection extends StatelessWidget {
   }
 }
 
-// class CreditCardScreen extends StatelessWidget {
-//   const CreditCardScreen({Key key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       child: Scaffold(
-//         appBar: AppBar(
-//           title: Text('Adicionar com cartão'),
-//         ),
-//         body: Container(
-//           child: CreditCardForm(
-//             formKey: GlobalKey(), // Required
-//             onCreditCardModelChange: (CreditCardModel data) {}, // Required
-//             themeColor: Colors.red,
-//             obscureCvv: true,
-//             obscureNumber: true,
-//             cardNumberDecoration: const InputDecoration(
-//               border: OutlineInputBorder(),
-//               labelText: 'Number',
-//               hintText: 'XXXX XXXX XXXX XXXX',
-//             ),
-//             expiryDateDecoration: const InputDecoration(
-//               border: OutlineInputBorder(),
-//               labelText: 'Expired Date',
-//               hintText: 'XX/XX',
-//             ),
-//             cvvCodeDecoration: const InputDecoration(
-//               border: OutlineInputBorder(),
-//               labelText: 'CVV',
-//               hintText: 'XXX',
-//             ),
-//             cardHolderDecoration: const InputDecoration(
-//               border: OutlineInputBorder(),
-//               labelText: 'Card Holder',
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 class CreditCardScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -721,5 +692,145 @@ class CreditCardScreenState extends State<CreditCardScreen> {
       cvvCode = creditCardModel.cvvCode;
       isCvvFocused = creditCardModel.isCvvFocused;
     });
+  }
+}
+
+class BankSilkScreen extends StatelessWidget {
+  const BankSilkScreen({
+    Key key,
+    @required this.pdfString,
+  }) : super(key: key);
+
+  final String pdfString;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Adicionar com boleto'),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Card(
+            child: Flex(
+              direction: Axis.horizontal,
+              children: [
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(
+                                top: constraints.maxHeight * .05),
+                            child: Text(
+                              'Boleto Gerado!',
+                              style: GoogleFonts.roboto(
+                                fontSize: 35,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Text(
+                            'Copie a linha digitável abaixo e a pague em um banco ou lotérica',
+                            style: GoogleFonts.roboto(
+                              fontSize: 25,
+                              fontWeight: FontWeight.w300,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 50),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              InkWell(
+                                child: Icon(Icons.share_outlined, size: 50),
+                                onTap: () {
+                                  Share.share(
+                                    this.pdfString,
+                                    subject: 'Seu boleto bancário!',
+                                  );
+                                },
+                              ),
+                              InkWell(
+                                child: Icon(
+                                  Icons.copy_outlined,
+                                  size: 50,
+                                ),
+                                onTap: () async {
+                                  await ClipboardManager.copyToClipBoard(
+                                    this.pdfString,
+                                  );
+
+                                  final snackBar =
+                                      SnackBar(content: Text('Texto copiado!'));
+
+                                  Scaffold.of(context).showSnackBar(snackBar);
+                                },
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 40),
+                          _ShowBankSilkCode(pdfString: this.pdfString),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ShowBankSilkCode extends StatefulWidget {
+  const _ShowBankSilkCode({
+    Key key,
+    @required this.pdfString,
+  }) : super(key: key);
+
+  final String pdfString;
+
+  @override
+  __ShowBankSilkCodeState createState() => __ShowBankSilkCodeState();
+}
+
+class __ShowBankSilkCodeState extends State<_ShowBankSilkCode> {
+  bool showText = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        FlatButton(
+          onPressed: () {
+            print(showText);
+            setState(() {
+              showText = !showText;
+            });
+          },
+          child: Text(
+            !showText ? 'Mostrar' : 'Esconder',
+            style: GoogleFonts.roboto(fontSize: 20),
+          ),
+        ),
+        if (showText)
+          Container(
+            margin: EdgeInsets.only(top: 20),
+            child: Text(
+              widget.pdfString,
+              // textAlign: TextAlignVertical.center,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.roboto(fontSize: 25),
+            ),
+          ),
+      ],
+    );
   }
 }
