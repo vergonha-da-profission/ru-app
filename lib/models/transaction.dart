@@ -1,7 +1,9 @@
+import 'package:timeago/timeago.dart' as timeago;
+
 class Transactions {
   final String name;
   final String type;
-  final String price;
+  final double price;
   final String description;
   final DateTime time;
 
@@ -12,4 +14,9 @@ class Transactions {
     this.description,
     this.time,
   });
+
+  get parsedDate {
+    timeago.setLocaleMessages('br', timeago.PtBrMessages());
+    return timeago.format(this.time, locale: 'br');
+  }
 }

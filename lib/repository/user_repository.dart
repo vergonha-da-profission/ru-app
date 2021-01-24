@@ -64,7 +64,7 @@ abstract class UserRepository {
   static Future<dynamic> getUserData() async {
     Dio dio = new Dio();
     final response = await dio.get(
-        "https://gist.githubusercontent.com/fersasil/f8302e8c21be3d71b9d1758973050f08/raw/524fb037ffcde9736d02ff0ef1b49ec4559509f9/user.json");
+        "https://gist.githubusercontent.com/fersasil/f8302e8c21be3d71b9d1758973050f08/raw/b1ebc0a24368b115bc4bf2baa74695abdd452746/user.json");
 
     return User.fromJson(response.data);
   }

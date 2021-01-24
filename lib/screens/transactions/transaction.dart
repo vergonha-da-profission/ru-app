@@ -1,43 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ru/bloc/authentication/authentication_bloc.dart';
 
 class Transactions extends StatelessWidget {
   const Transactions({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final items = [
-      {
-        "incoming": false,
-        "transactionName": 'Ticket',
-        "transactionType": 'Restaurante universitário',
-        "amount": 2.5,
-        "transactionTime": '30 min',
-      },
-      {
-        "incoming": true,
-        "transactionName": 'Depósito na carteira',
-        "transactionType": 'Cartão de Crédito',
-        "amount": 50.0,
-        "transactionTime": '60 min',
-      },
-      {
-        "incoming": true,
-        "transactionName": 'Depósito na carteira',
-        "transactionType": 'Boleto bancário',
-        "amount": 10.0,
-        "transactionTime": '90 min',
-      },
-      {
-        "incoming": false,
-        "transactionName": 'Ticket',
-        "transactionType": 'Restaurante universitário',
-        "amount": 2.5,
-        "transactionTime": '1 dia',
-      }
-    ];
+    final _transactions =
+        BlocProvider.of<AuthenticationBloc>(context, listen: false)
+            .user
+            .transactions;
 
     return Flex(
       direction: Axis.vertical,
@@ -45,17 +21,16 @@ class Transactions extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          // height: MediaQuery.of(context).size.height - size.height,
           child: ListView.builder(
             padding: EdgeInsets.only(top: 10),
-            itemCount: items.length,
+            itemCount: _transactions.length,
             itemBuilder: (BuildContext context, int index) {
               return _TransactionItem(
-                amount: items[index]["amount"],
-                transactionName: items[index]["transactionName"],
-                transactionTime: items[index]["transactionTime"],
-                transactionType: items[index]["transactionType"],
-                incoming: items[index]["incoming"],
+                amount: _transactions[index].price,
+                transactionName: _transactions[index].name,
+                transactionTime: _transactions[index].parsedDate,
+                transactionType: _transactions[index].description,
+                incoming: _transactions[index].type == "incoming",
               );
             },
           ),
@@ -128,7 +103,7 @@ class _TransactionItem extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      'Há ${this.transactionTime}',
+                      this.transactionTime,
                       style: GoogleFonts.roboto(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,

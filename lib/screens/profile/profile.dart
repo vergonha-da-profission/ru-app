@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ru/bloc/authentication/authentication_bloc.dart';
 
 class ProfileSection extends StatelessWidget {
   const ProfileSection({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final _user =
+        BlocProvider.of<AuthenticationBloc>(context, listen: false).user;
+
     return Container(
       child: LayoutBuilder(
         builder: (context, constraints) => Align(
@@ -27,15 +32,14 @@ class ProfileSection extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           _ProfileSectionItem(
-                              icon: Icons.person_outline, name: 'Guilherme'),
+                              icon: Icons.person_outline, name: _user.fullName),
                           _ProfileSectionItem(
-                              icon: Icons.addchart_rounded, name: '1721101026'),
+                              icon: Icons.addchart_rounded, name: _user.email),
                           _ProfileSectionItem(
-                              icon: Icons.email_outlined,
-                              name: 'guilherme.silva97'),
+                              icon: Icons.email_outlined, name: _user.iduffs),
                           _ProfileSectionItem(
                             icon: Icons.assignment_ind_outlined,
-                            name: '123.123.123-12',
+                            name: _user.formatedCpf,
                           ),
                         ],
                       ),
@@ -91,6 +95,9 @@ class _ProfileImageSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _user =
+        BlocProvider.of<AuthenticationBloc>(context, listen: false).user;
+
     return Stack(
       alignment: Alignment.topCenter,
       children: [
@@ -112,7 +119,7 @@ class _ProfileImageSection extends StatelessWidget {
           width: 200,
           child: ClipOval(
             child: Image.network(
-              'http://placekitten.com/200/300',
+              _user.profilePicture,
               width: 100,
               fit: BoxFit.cover,
             ),

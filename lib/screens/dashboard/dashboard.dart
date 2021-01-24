@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ru/bloc/authentication/authentication_bloc.dart';
 
 class HomeSection extends StatelessWidget {
   const HomeSection({Key key}) : super(key: key);
@@ -16,16 +18,9 @@ class HomeSection extends StatelessWidget {
         Container(
           child: Column(
             children: [
-              _ProfilePicture(
-                imageUrl: 'http://placekitten.com/200/300',
-              ),
-              _UserName(
-                name: 'Name teste',
-              ),
-              _QrCode(
-                imageUrl:
-                    'http://www.pngall.com/wp-content/uploads/2/QR-Code-PNG-Clipart.png',
-              ),
+              _ProfilePicture(),
+              _UserName(),
+              _QrCode(),
             ],
           ),
         ),
@@ -37,17 +32,17 @@ class HomeSection extends StatelessWidget {
 class _UserName extends StatelessWidget {
   const _UserName({
     Key key,
-    @required this.name,
   }) : super(key: key);
-
-  final String name;
 
   @override
   Widget build(BuildContext context) {
+    final _user =
+        BlocProvider.of<AuthenticationBloc>(context, listen: false).user;
+
     return Container(
       margin: EdgeInsets.only(top: 15),
       child: Text(
-        this.name,
+        _user.fullName,
         style: GoogleFonts.roboto(
           fontSize: 33,
         ),
@@ -58,19 +53,19 @@ class _UserName extends StatelessWidget {
 
 class _QrCode extends StatelessWidget {
   const _QrCode({
-    @required this.imageUrl,
     Key key,
   }) : super(key: key);
 
-  final String imageUrl;
-
   @override
   Widget build(BuildContext context) {
+    final _user =
+        BlocProvider.of<AuthenticationBloc>(context, listen: false).user;
+
     return Container(
       margin: EdgeInsets.only(top: 10),
       width: MediaQuery.of(context).size.width * .7,
       height: MediaQuery.of(context).size.width * .7,
-      child: Image.network(imageUrl),
+      child: Image.network(_user.qrCodeUrl),
     );
   }
 }
@@ -78,20 +73,20 @@ class _QrCode extends StatelessWidget {
 class _ProfilePicture extends StatelessWidget {
   const _ProfilePicture({
     Key key,
-    @required this.imageUrl,
   }) : super(key: key);
-
-  final String imageUrl;
 
   @override
   Widget build(BuildContext context) {
+    final _user =
+        BlocProvider.of<AuthenticationBloc>(context, listen: false).user;
+
     return Container(
       margin: EdgeInsets.only(top: 25),
       width: MediaQuery.of(context).size.width * .35,
       height: MediaQuery.of(context).size.width * .35,
       child: ClipOval(
         child: Image.network(
-          this.imageUrl,
+          _user.profilePicture,
           fit: BoxFit.cover,
         ),
       ),

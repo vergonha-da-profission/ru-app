@@ -9,6 +9,7 @@ class User {
   final String qrCodeUrl;
   final String profilePicture;
   final String cpf;
+  final double balance;
   final List<Transactions> transactions;
 
   User({
@@ -19,6 +20,7 @@ class User {
     this.profilePicture,
     this.cpf,
     this.transactions,
+    this.balance,
   });
 
   factory User.fromJson(json) {
@@ -45,6 +47,18 @@ class User {
       profilePicture: user["profilePicture"],
       qrCodeUrl: user["qrCodeUrl"],
       transactions: transactions,
+      balance: user["balance"],
     );
+  }
+
+  String get formatedCpf {
+    final stringCpf = this.cpf.toString();
+    return stringCpf.substring(0, 3) +
+        '.' +
+        stringCpf.toString().substring(3, 6) +
+        '.' +
+        stringCpf.toString().substring(6, 9) +
+        '-' +
+        stringCpf.toString().substring(9, 11);
   }
 }

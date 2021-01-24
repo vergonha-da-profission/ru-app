@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ru/bloc/authentication/authentication_bloc.dart';
 import 'package:ru/screens/dashboard/dashboard.dart';
 import 'package:ru/screens/profile/profile.dart';
 import 'package:ru/screens/transactions/transaction.dart';
@@ -75,6 +77,9 @@ class _AppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _user =
+        BlocProvider.of<AuthenticationBloc>(context, listen: false).user;
+
     final size = AppBar().preferredSize;
 
     final style = GoogleFonts.roboto(
@@ -103,7 +108,7 @@ class _AppBar extends StatelessWidget {
               ),
               InkWell(
                 child: Text(
-                  "R\$ 0,25",
+                  "R\$ ${_user.balance.toStringAsFixed(2).replaceFirst('.', ',')}",
                   style: style,
                 ),
                 onTap: () {
