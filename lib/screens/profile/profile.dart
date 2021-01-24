@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -118,10 +119,12 @@ class _ProfileImageSection extends StatelessWidget {
           height: 200,
           width: 200,
           child: ClipOval(
-            child: Image.network(
-              _user.profilePicture,
-              width: 100,
+            child: CachedNetworkImage(
+              imageUrl: _user.profilePicture,
               fit: BoxFit.cover,
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  CircularProgressIndicator(value: downloadProgress.progress),
+              errorWidget: (context, url, error) => Icon(Icons.error),
             ),
           ),
         )
