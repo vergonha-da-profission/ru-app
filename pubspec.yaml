@@ -21,6 +21,7 @@ dependencies:
   flutter_credit_card: ^0.1.4
   share: ^0.6.5+4
   clipboard_manager: ^0.0.1
+  dio: ^3.0.10
 
   cupertino_icons: ^1.0.0
 
