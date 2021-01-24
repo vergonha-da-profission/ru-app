@@ -1,53 +1,7 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:ru/bloc/authentication/authentication_bloc.dart';
-// import 'package:ru/bloc/login/login_bloc.dart';
-
-// class HomeScreen extends StatelessWidget  {
-//   const HomeScreen({Key key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("Dashboard"),
-//       ),
-//       body: Column(
-//         crossAxisAlignment: CrossAxisAlignment.center,
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           Container(
-//             child: Center(
-//               child: Text("Olá, você esta logado"),
-//             ),
-//           ),
-//           FlatButton(
-//             child: Text("Sair"),
-//             onPressed: () => LoginBloc(
-//                     authenticationBloc:
-//                         BlocProvider.of<AuthenticationBloc>(context))
-//                 .add(
-//               LoginLogout(),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-/// Flutter code sample for BottomNavigationBar
-
-// This example shows a [BottomNavigationBar] as it is used within a [Scaffold]
-// widget. The [BottomNavigationBar] has three [BottomNavigationBarItem]
-// widgets and the [currentIndex] is set to index 0. The selected item is
-// amber. The `_onItemTapped` function changes the selected item's index
-// and displays a corresponding message in the center of the [Scaffold].
-//
-// ![A scaffold with a bottom navigation bar containing three bottom navigation
-// bar items. The first one is selected.](https://flutter.github.io/assets-for-api-docs/assets/material/bottom_navigation_bar.png)
-
 import 'package:flutter/material.dart';
+import 'package:flutter_credit_card/credit_card_form.dart';
+import 'package:flutter_credit_card/credit_card_model.dart';
+import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -61,15 +15,10 @@ class HomeScreen extends StatefulWidget {
 /// This is the private State class that goes with HomeScreen.
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 1;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     Transactions(),
     HomeSection(),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
+    ProfileSection(),
     Wallet(),
   ];
 
@@ -165,10 +114,18 @@ class PaymentArea extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          SvgPicture.asset(
-            'assets/svg/card.svg',
-            semanticsLabel: 'Card',
-            width: 100,
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CreditCardScreen()),
+              );
+            },
+            child: SvgPicture.asset(
+              'assets/svg/card.svg',
+              semanticsLabel: 'Card',
+              width: 100,
+            ),
           ),
           SvgPicture.asset(
             'assets/svg/bank.svg',
@@ -483,5 +440,286 @@ class _TransactionItem extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class ProfileSection extends StatelessWidget {
+  const ProfileSection({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: LayoutBuilder(
+        builder: (context, constraints) => Align(
+          alignment: Alignment.topCenter,
+          child: Column(
+            children: [
+              _ProfileImageSection(
+                maxHeight: constraints.maxHeight,
+              ),
+              SizedBox(height: 15),
+              Expanded(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _ProfileSectionItem(
+                              icon: Icons.person_outline, name: 'Guilherme'),
+                          _ProfileSectionItem(
+                              icon: Icons.addchart_rounded, name: '1721101026'),
+                          _ProfileSectionItem(
+                              icon: Icons.email_outlined,
+                              name: 'guilherme.silva97'),
+                          _ProfileSectionItem(
+                            icon: Icons.assignment_ind_outlined,
+                            name: '123.123.123-12',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfileSectionItem extends StatelessWidget {
+  const _ProfileSectionItem({
+    Key key,
+    @required this.icon,
+    @required this.name,
+  }) : super(key: key);
+
+  final IconData icon;
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 50,
+      width: double.infinity,
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            size: 35,
+          ),
+          SizedBox(width: 10),
+          Text(
+            name,
+            style: GoogleFonts.roboto(fontSize: 22),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfileImageSection extends StatelessWidget {
+  const _ProfileImageSection({Key key, @required this.maxHeight})
+      : super(key: key);
+
+  final double maxHeight;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.topCenter,
+      children: [
+        Container(
+          height: this.maxHeight * .3,
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(150),
+              bottomRight: Radius.circular(150),
+            ),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(
+            top: this.maxHeight * .05,
+          ),
+          height: 200,
+          width: 200,
+          child: ClipOval(
+            child: Image.network(
+              'http://placekitten.com/200/300',
+              width: 100,
+              fit: BoxFit.cover,
+            ),
+          ),
+        )
+      ],
+    );
+  }
+}
+
+// class CreditCardScreen extends StatelessWidget {
+//   const CreditCardScreen({Key key}) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       child: Scaffold(
+//         appBar: AppBar(
+//           title: Text('Adicionar com cartão'),
+//         ),
+//         body: Container(
+//           child: CreditCardForm(
+//             formKey: GlobalKey(), // Required
+//             onCreditCardModelChange: (CreditCardModel data) {}, // Required
+//             themeColor: Colors.red,
+//             obscureCvv: true,
+//             obscureNumber: true,
+//             cardNumberDecoration: const InputDecoration(
+//               border: OutlineInputBorder(),
+//               labelText: 'Number',
+//               hintText: 'XXXX XXXX XXXX XXXX',
+//             ),
+//             expiryDateDecoration: const InputDecoration(
+//               border: OutlineInputBorder(),
+//               labelText: 'Expired Date',
+//               hintText: 'XX/XX',
+//             ),
+//             cvvCodeDecoration: const InputDecoration(
+//               border: OutlineInputBorder(),
+//               labelText: 'CVV',
+//               hintText: 'XXX',
+//             ),
+//             cardHolderDecoration: const InputDecoration(
+//               border: OutlineInputBorder(),
+//               labelText: 'Card Holder',
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+class CreditCardScreen extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return CreditCardScreenState();
+  }
+}
+
+class CreditCardScreenState extends State<CreditCardScreen> {
+  String cardNumber = '';
+  String expiryDate = '';
+  String cardHolderName = '';
+  String cvvCode = '';
+  bool isCvvFocused = false;
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Adicionar com cartão'),
+      ),
+      resizeToAvoidBottomInset: true,
+      body: SafeArea(
+        child: Column(
+          children: <Widget>[
+            CreditCardWidget(
+              cardNumber: cardNumber,
+              expiryDate: expiryDate,
+              cardHolderName: cardHolderName,
+              cvvCode: cvvCode,
+              showBackView: isCvvFocused,
+              obscureCardNumber: true,
+              obscureCardCvv: true,
+              cardBgColor: Color(0xFFcad8dd),
+              labelCardHolder: 'NOME',
+              height: 200,
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    CreditCardForm(
+                      formKey: formKey,
+                      numberValidationMessage:
+                          'Por favor, insira um número válido',
+                      cvvValidationMessage: 'Insira uma data valida',
+                      dateValidationMessage: 'Insira um CVV válido',
+                      obscureCvv: true,
+                      obscureNumber: true,
+                      cardNumberDecoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Numéro',
+                        hintText: 'XXXX XXXX XXXX XXXX',
+                      ),
+                      expiryDateDecoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Vencimento',
+                        hintText: 'XX/XX',
+                      ),
+                      cvvCodeDecoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'CVV',
+                        hintText: 'XXX',
+                      ),
+                      cardHolderDecoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Nome',
+                      ),
+                      onCreditCardModelChange: onCreditCardModelChange,
+                    ),
+                    RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Container(
+                        margin: const EdgeInsets.all(8),
+                        child: const Text(
+                          'Continuar',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'halter',
+                            fontSize: 14,
+                            package: 'flutter_credit_card',
+                          ),
+                        ),
+                      ),
+                      color: const Color(0xff1b447b),
+                      onPressed: () {
+                        if (formKey.currentState.validate()) {
+                          print('valid!');
+                        } else {
+                          print('invalid!');
+                        }
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void onCreditCardModelChange(CreditCardModel creditCardModel) {
+    setState(() {
+      cardNumber = creditCardModel.cardNumber;
+      expiryDate = creditCardModel.expiryDate;
+      cardHolderName = creditCardModel.cardHolderName;
+      cvvCode = creditCardModel.cvvCode;
+      isCvvFocused = creditCardModel.isCvvFocused;
+    });
   }
 }
