@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -65,7 +66,12 @@ class _QrCode extends StatelessWidget {
       margin: EdgeInsets.only(top: 10),
       width: MediaQuery.of(context).size.width * .7,
       height: MediaQuery.of(context).size.width * .7,
-      child: Image.network(_user.qrCodeUrl),
+      child: CachedNetworkImage(
+        imageUrl: _user.qrCodeUrl,
+        progressIndicatorBuilder: (context, url, downloadProgress) =>
+            CircularProgressIndicator(value: downloadProgress.progress),
+        errorWidget: (context, url, error) => Icon(Icons.error),
+      ),
     );
   }
 }
@@ -85,9 +91,12 @@ class _ProfilePicture extends StatelessWidget {
       width: MediaQuery.of(context).size.width * .35,
       height: MediaQuery.of(context).size.width * .35,
       child: ClipOval(
-        child: Image.network(
-          _user.profilePicture,
+        child: CachedNetworkImage(
+          imageUrl: _user.profilePicture,
           fit: BoxFit.cover,
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              CircularProgressIndicator(value: downloadProgress.progress),
+          errorWidget: (context, url, error) => Icon(Icons.error),
         ),
       ),
     );

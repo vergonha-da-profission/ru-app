@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -89,9 +90,12 @@ class _MainImage extends StatelessWidget {
           height: _Const.imageWidth,
           width: _Const.imageHeight,
           child: Container(
-            child: _Const.imageName.startsWith('http')
-                ? Image.network(_Const.imageName)
-                : Image.asset(_Const.imageName),
+            child: CachedNetworkImage(
+              imageUrl: _Const.imageName,
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  CircularProgressIndicator(value: downloadProgress.progress),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            ),
           ),
         ),
       ),
