@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:ru/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class UserRepository {
@@ -57,5 +59,13 @@ abstract class UserRepository {
     final token = prefs.getString("token");
 
     return token != null;
+  }
+
+  static Future<dynamic> getUserData() async {
+    Dio dio = new Dio();
+    final response = await dio.get(
+        "https://gist.githubusercontent.com/fersasil/f8302e8c21be3d71b9d1758973050f08/raw/b1ebc0a24368b115bc4bf2baa74695abdd452746/user.json");
+
+    return User.fromJson(response.data);
   }
 }
