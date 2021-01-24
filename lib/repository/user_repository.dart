@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:ru/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+const LOGIN_URL = 'http://10.0.2.2:3000/api/auth/login';
+
 abstract class UserRepository {
   static Future<String> authenticate({
     @required String username,
@@ -18,10 +20,10 @@ abstract class UserRepository {
     try {
       final res = await http
           .post(
-            'https://reqres.in/api/login',
+            LOGIN_URL,
             headers: headers,
             body: jsonEncode({
-              "email": username,
+              "username": username,
               "password": password,
             }),
           )
@@ -59,6 +61,14 @@ abstract class UserRepository {
     final token = prefs.getString("token");
 
     return token != null;
+  }
+
+  static Future<String> getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final token = prefs.getString("token");
+
+    return token;
   }
 
   static Future<dynamic> getUserData() async {

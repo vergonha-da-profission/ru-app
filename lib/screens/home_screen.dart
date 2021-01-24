@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ru/bloc/authentication/authentication_bloc.dart';
+import 'package:ru/models/user.dart';
 import 'package:ru/screens/dashboard/dashboard.dart';
 import 'package:ru/screens/profile/profile.dart';
 import 'package:ru/screens/transactions/transaction.dart';
 import 'package:ru/screens/wallet/wallet.dart';
+import 'package:web_socket_channel/io.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -107,10 +111,7 @@ class _AppBar extends StatelessWidget {
                 ),
               ),
               InkWell(
-                child: Text(
-                  "R\$ ${_user.balance.toStringAsFixed(2).replaceFirst('.', ',')}",
-                  style: style,
-                ),
+                child: WebSocketBalance(style: style),
                 onTap: () {
                   onTapped(1);
                 },
@@ -129,5 +130,53 @@ class _AppBar extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class WebSocketBalance extends StatefulWidget {
+  WebSocketBalance({
+    Key key,
+    @required this.style,
+  }) : super(key: key);
+
+  final TextStyle style;
+  // final IOWebSocketChannel channel;
+
+  @override
+  _WebSocketBalanceState createState() => _WebSocketBalanceState();
+}
+
+class _WebSocketBalanceState extends State<WebSocketBalance> {
+  @override
+  void initState() {
+    super.initState();
+    this._user =
+        BlocProvider.of<AuthenticationBloc>(context, listen: false).user;
+    this._channel = BlocProvider.of<AuthenticationBloc>(context, listen: false)
+        .userBalanceChannel;
+  }
+
+  User _user;
+  IOWebSocketChannel _channel;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<Object>(
+        stream: this._channel.stream,
+        builder: (context, snapshot) {
+          double balance = this._user.balance;
+          print(snapshot);
+
+          if (snapshot.hasData) {
+            final data = jsonDecode(snapshot.data);
+
+            balance = double.parse("${data["balance"]}");
+          }
+
+          return Text(
+            "R\$ ${balance.toStringAsFixed(2).replaceFirst('.', ',')}",
+            style: widget.style,
+          );
+        });
   }
 }

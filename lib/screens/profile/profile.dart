@@ -28,19 +28,36 @@ class ProfileSection extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Card(
                     child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 15),
+                      child: Flex(
+                        direction: Axis.vertical,
                         children: [
-                          _ProfileSectionItem(
-                              icon: Icons.person_outline, name: _user.fullName),
-                          _ProfileSectionItem(
-                              icon: Icons.addchart_rounded, name: _user.email),
-                          _ProfileSectionItem(
-                              icon: Icons.email_outlined, name: _user.iduffs),
-                          _ProfileSectionItem(
-                            icon: Icons.assignment_ind_outlined,
-                            name: _user.formatedCpf,
+                          Expanded(
+                            child: ListView(
+                              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                _ProfileSectionItem(
+                                    icon: Icons.person_outline,
+                                    name: _user.fullName),
+                                _ProfileSectionItem(
+                                    icon: Icons.addchart_rounded,
+                                    name: _user.email),
+                                _ProfileSectionItem(
+                                    icon: Icons.email_outlined,
+                                    name: _user.iduffs),
+                                _ProfileSectionItem(
+                                  icon: Icons.assignment_ind_outlined,
+                                  name: _user.formatedCpf,
+                                ),
+                                TextButton(
+                                    onPressed: () =>
+                                        BlocProvider.of<AuthenticationBloc>(
+                                                context)
+                                            .add(new LoggedOut()),
+                                    child: Text('Sair'))
+                              ],
+                            ),
                           ),
                         ],
                       ),
