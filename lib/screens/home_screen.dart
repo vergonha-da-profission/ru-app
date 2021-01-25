@@ -81,9 +81,6 @@ class _AppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _user =
-        BlocProvider.of<AuthenticationBloc>(context, listen: false).user;
-
     final size = AppBar().preferredSize;
 
     final style = GoogleFonts.roboto(

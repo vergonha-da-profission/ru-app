@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
+import 'package:ru/bloc/wallet/wallet_bloc.dart';
 
 class CreditCardScreen extends StatefulWidget {
+  final double balance;
+  final WalletBloc bloc;
+
+  const CreditCardScreen({Key key, this.balance, this.bloc}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return CreditCardScreenState();
@@ -46,8 +51,8 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                       formKey: formKey,
                       numberValidationMessage:
                           'Por favor, insira um número válido',
-                      cvvValidationMessage: 'Insira uma data valida',
-                      dateValidationMessage: 'Insira um CVV válido',
+                      dateValidationMessage: 'Insira uma data valida',
+                      cvvValidationMessage: 'Insira um CVV válido',
                       obscureCvv: true,
                       obscureNumber: true,
                       cardNumberDecoration: const InputDecoration(
@@ -90,10 +95,9 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                       color: const Color(0xff1b447b),
                       onPressed: () {
                         if (formKey.currentState.validate()) {
-                          print('valid!');
-                        } else {
-                          print('invalid!');
-                        }
+                          widget.bloc.add(new WalletEventAddFoundsCreditCard(
+                              balance: widget.balance));
+                        } else {}
                       },
                     )
                   ],

@@ -27,7 +27,7 @@ class AuthenticationBloc
       if (hasToken) {
         this.token = await UserRepository.getToken();
 
-        user = await UserRepository.getUserData();
+        user = await UserRepository.getUserData(this.token);
         userBalanceChannel = IOWebSocketChannel.connect('ws://10.0.2.2:3030',
             headers: {"authorization": 'Bearer ${this.token}'});
         yield AuthenticationAuthenticated();
@@ -41,7 +41,7 @@ class AuthenticationBloc
       await UserRepository.persistToken(event.token);
       this.token = await UserRepository.getToken();
 
-      user = await UserRepository.getUserData();
+      user = await UserRepository.getUserData(this.token);
       userBalanceChannel = IOWebSocketChannel.connect('ws://172.21.0.1:3030',
           headers: {"authorization": 'Bearer ${this.token}'});
 
