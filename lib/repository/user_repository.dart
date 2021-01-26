@@ -7,6 +7,7 @@ import 'package:ru/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const LOGIN_URL = 'http://10.0.2.2:3000/api/auth/login';
+const GET_PROFILE_URL = 'http://10.0.2.2:3000/api/user/profile';
 
 abstract class UserRepository {
   static Future<String> authenticate({
@@ -71,11 +72,17 @@ abstract class UserRepository {
     return token;
   }
 
-  static Future<dynamic> getUserData() async {
+  static Future<dynamic> getUserData(String token) async {
     Dio dio = new Dio();
-    final response = await dio.get(
-        "https://gist.githubusercontent.com/fersasil/f8302e8c21be3d71b9d1758973050f08/raw/b1ebc0a24368b115bc4bf2baa74695abdd452746/user.json");
 
-    return User.fromJson(response.data);
+    dio.options.headers["authorization"] = "Bearer $token";
+
+    final response = await dio.get(GET_PROFILE_URL);
+
+    final a = User.fromJson(response.data);
+
+    print(a);
+
+    return (a);
   }
 }

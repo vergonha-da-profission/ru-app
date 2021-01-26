@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:ru/models/transaction.dart';
 
 class User {
@@ -24,15 +22,14 @@ class User {
   });
 
   factory User.fromJson(json) {
-    final decoded = jsonDecode(json);
-    final user = decoded["user"];
+    final user = json["user"];
 
-    final transactions = (decoded["user"]["transactions"] as List)
+    final transactions = (json["user"]["transactions"] as List)
         .map(
           (tr) => Transactions(
             description: tr["description"],
             name: tr["name"],
-            price: tr["price"],
+            price: double.parse("${tr["price"]}"),
             time: DateTime.parse(tr["time"]),
             type: tr["type"],
           ),

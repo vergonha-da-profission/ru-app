@@ -8,9 +8,11 @@ class BankSilkScreen extends StatelessWidget {
   const BankSilkScreen({
     Key key,
     @required this.pdfString,
+    @required this.balance,
   }) : super(key: key);
 
   final String pdfString;
+  final double balance;
 
   @override
   Widget build(BuildContext context) {
