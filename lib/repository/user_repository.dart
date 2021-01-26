@@ -4,10 +4,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:ru/models/user.dart';
+import 'package:ru/shared/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const LOGIN_URL = 'http://10.0.2.2:3000/api/auth/login';
-const GET_PROFILE_URL = 'http://10.0.2.2:3000/api/user/profile';
+const LOGIN_URL = "$SERVER_URL/api/auth/login";
+const GET_PROFILE_URL = "$SERVER_URL/api/user/profile";
 
 abstract class UserRepository {
   static Future<String> authenticate({

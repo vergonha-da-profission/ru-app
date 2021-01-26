@@ -1,4 +1,5 @@
 import 'package:ru/models/transaction.dart';
+import 'package:ru/shared/constants.dart';
 
 class User {
   final String fullName;
@@ -8,7 +9,7 @@ class User {
   final String profilePicture;
   final String cpf;
   final double balance;
-  final List<Transactions> transactions;
+  final List<Transaction> transactions;
 
   User({
     this.fullName,
@@ -26,7 +27,7 @@ class User {
 
     final transactions = (json["user"]["transactions"] as List)
         .map(
-          (tr) => Transactions(
+          (tr) => Transaction(
             description: tr["description"],
             name: tr["name"],
             price: double.parse("${tr["price"]}"),
@@ -41,10 +42,10 @@ class User {
       email: user["email"],
       fullName: user["full_name"],
       iduffs: user["iduffs"],
-      profilePicture: user["profilePicture"],
-      qrCodeUrl: user["qrCodeUrl"],
+      profilePicture: "$SERVER_URL${user["profilePicture"]}",
+      qrCodeUrl: "$SERVER_URL${user["qrCodeUrl"]}",
       transactions: transactions,
-      balance: user["balance"],
+      balance: double.parse("${user["balance"]}"),
     );
   }
 

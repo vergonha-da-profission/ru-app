@@ -162,8 +162,6 @@ class _WebSocketBalanceState extends State<WebSocketBalance> {
         stream: this._channel.stream,
         builder: (context, snapshot) {
           double balance = this._user.balance;
-          print(snapshot);
-
           if (snapshot.hasData) {
             final data = jsonDecode(snapshot.data);
 
