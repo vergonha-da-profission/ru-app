@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ru/repository/user_repository.dart';
+import 'package:ru/shared/constants.dart';
 
-const ADD_FOUNDS_URL = 'http://10.0.2.2:3000/api/transaction/add';
+const ADD_FOUNDS_URL = "$SERVER_URL/api/transaction/add";
 
 abstract class TransactionRepository {
   static Future<bool> addFouds({
