@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -24,12 +23,9 @@ class _TransactionsState extends State<Transactions> {
   @override
   void initState() {
     super.initState();
-    print('as');
 
     final token =
         BlocProvider.of<AuthenticationBloc>(context, listen: false).token;
-
-    print('as ' + token);
 
     this.transactionsChannel =
         IOWebSocketChannel.connect(WEB_SOCKET_URL, headers: {
@@ -40,7 +36,6 @@ class _TransactionsState extends State<Transactions> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     transactionsChannel.sink.close();
   }
@@ -61,10 +56,7 @@ class _TransactionsState extends State<Transactions> {
           child: StreamBuilder(
               stream: transactionsChannel.stream,
               builder: (context, snapshot) {
-                print(snapshot.hasData);
-
                 if (snapshot.hasData) {
-                  print("datdast");
                   final data = jsonDecode(snapshot.data);
 
                   final transactionUnparsed = data['transaction'];

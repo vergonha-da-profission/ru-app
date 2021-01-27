@@ -27,6 +27,9 @@ dependencies:
   cached_network_image: ^2.4.0
   web_socket_channel: ^1.1.0
   rflutter_alert: ^1.1.0
+  buffer: ^1.0.7
+  path_provider: ^1.6.27
+  uuid: ^2.2.2
 
 dev_dependencies:
   flutter_test:

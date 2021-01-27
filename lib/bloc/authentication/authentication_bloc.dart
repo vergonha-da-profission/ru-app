@@ -63,8 +63,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState>
       if (hasToken) {
         this.token = await UserRepository.getToken();
 
-        print(this.token);
-
         user = await UserRepository.getUserData(this.token);
 
         createUserBalanceChannel();

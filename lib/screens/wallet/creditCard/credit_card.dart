@@ -15,9 +15,6 @@ class CreditCardScreen extends StatelessWidget {
       create: (context) => CreditCardBloc(),
       child: BlocBuilder<CreditCardBloc, CreditCardState>(
         builder: (context, state) {
-          print('state');
-          print(state);
-
           if (state is CreditCardInitial) {
             return CreditCardScreenBody(
               balance: this.balance,

@@ -105,13 +105,13 @@ class PaymentArea extends StatelessWidget {
         children: [
           InkWell(
             onTap: () {
-              final bloc = BlocProvider.of<WalletBloc>(context, listen: false);
-              print(bloc);
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      CreditCardScreen(balance: getBalance(), bloc: bloc),
+                  builder: (context) => CreditCardScreen(
+                    balance: getBalance(),
+                    bloc: BlocProvider.of<WalletBloc>(context, listen: false),
+                  ),
                 ),
               );
             },
@@ -126,11 +126,10 @@ class PaymentArea extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => BankSilkScreen(
-                          balance: getBalance(),
-                          pdfString:
-                              '34191.79001 01043.510047 91020.150008 4 85070026000',
-                        )),
+                  builder: (context) => BankSilkScreen(
+                    balance: getBalance(),
+                  ),
+                ),
               );
             },
             child: SvgPicture.asset(
