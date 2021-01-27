@@ -69,7 +69,7 @@ class _WalletInitialState extends State<WalletInitial> {
             ],
           ),
           PaymentArea(getBalance: () {
-            return double.parse(_controller.text.replaceAll(',', '.'));
+            return double.tryParse(_controller.text.replaceAll(',', '.'));
           })
         ],
       ),
@@ -94,6 +94,12 @@ class PaymentArea extends StatelessWidget {
         children: [
           InkWell(
             onTap: () {
+              if (getBalance() == 0 || getBalance() == null) {
+                _showAlert(context);
+                return;
+              }
+              FocusScope.of(context).unfocus();
+
               // ignore: close_sinks
               final WalletBloc _walletBlock =
                   BlocProvider.of<WalletBloc>(context, listen: false);
@@ -115,6 +121,13 @@ class PaymentArea extends StatelessWidget {
           ),
           InkWell(
             onTap: () {
+              if (getBalance() == 0 || getBalance() == null) {
+                _showAlert(context);
+                return;
+              }
+
+              FocusScope.of(context).unfocus();
+
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -131,6 +144,32 @@ class PaymentArea extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showAlert(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Center(child: Text("Valor inválido")),
+        content: Container(
+          height: MediaQuery.of(context).size.height * .13,
+          child: Column(
+            children: [
+              Text(
+                "Por favor digite um valor válido e tente novamente",
+                textAlign: TextAlign.center,
+              ),
+              FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Fechar'),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
