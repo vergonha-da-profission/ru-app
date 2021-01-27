@@ -25,11 +25,11 @@ abstract class UserRepository {
             LOGIN_URL,
             headers: headers,
             body: jsonEncode({
-              "username": username,
+              "username": username.toLowerCase().trim(),
               "password": password,
             }),
           )
-          .timeout(Duration(seconds: 10));
+          .timeout(Duration(seconds: 30));
 
       if (res.statusCode != 200 && res.statusCode != 400)
         throw Exception('http.post error: statusCode= ${res.statusCode}');
@@ -41,6 +41,7 @@ abstract class UserRepository {
 
       return decodedResponse;
     } catch (error) {
+      print(error);
       throw error;
     }
   }
