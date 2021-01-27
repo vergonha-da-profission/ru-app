@@ -68,6 +68,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState>
         createUserBalanceChannel();
         createTransactionChannel();
 
+        await Future.delayed(Duration(seconds: 1));
+
         yield AuthenticationAuthenticated();
       } else {
         yield AuthenticationUnauthenticated();
@@ -83,6 +85,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState>
 
       createUserBalanceChannel();
       createTransactionChannel();
+
+      await Future.delayed(Duration(seconds: 1));
 
       yield AuthenticationAuthenticated();
     }
