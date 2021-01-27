@@ -9,23 +9,25 @@ class HomeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        DefaultTabController(
-          // The number of tabs / content sections to display.
-          length: 3,
-          child: Container(), // Complete this code in the next step.
-        ),
-        Container(
-          child: Column(
-            children: [
-              _ProfilePicture(),
-              _UserName(),
-              _QrCode(),
-            ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          DefaultTabController(
+            // The number of tabs / content sections to display.
+            length: 3,
+            child: Container(), // Complete this code in the next step.
           ),
-        ),
-      ],
+          Container(
+            child: Column(
+              children: [
+                _ProfilePicture(),
+                _UserName(),
+                _QrCode(),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -41,9 +43,12 @@ class _UserName extends StatelessWidget {
         BlocProvider.of<AuthenticationBloc>(context, listen: false).user;
 
     return Container(
-      margin: EdgeInsets.only(top: 15),
+      margin: const EdgeInsets.only(top: 15, left: 5),
+      padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+      alignment: Alignment.center,
       child: Text(
         _user.fullName,
+        textAlign: TextAlign.center,
         style: GoogleFonts.roboto(
           fontSize: 33,
         ),
@@ -63,7 +68,6 @@ class _QrCode extends StatelessWidget {
         BlocProvider.of<AuthenticationBloc>(context, listen: false).user;
 
     return Container(
-      margin: EdgeInsets.only(top: 10),
       width: MediaQuery.of(context).size.width * .7,
       height: MediaQuery.of(context).size.width * .7,
       child: CachedNetworkImage(

@@ -1,4 +1,4 @@
-import 'package:clipboard_manager/clipboard_manager.dart';
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -108,9 +108,8 @@ class BankWidget extends StatelessWidget {
                                 size: 50,
                               ),
                               onTap: () async {
-                                await ClipboardManager.copyToClipBoard(
-                                  bankSilk.code,
-                                );
+                                FlutterClipboard.copy(bankSilk.code)
+                                    .then((value) => print('copied'));
 
                                 final snackBar =
                                     SnackBar(content: Text('Texto copiado!'));

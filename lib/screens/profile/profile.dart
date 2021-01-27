@@ -37,9 +37,13 @@ class ProfileSection extends StatelessWidget {
                             child: ListView(
                               // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                _ProfileSectionItem(
+                                Container(
+                                  width: 200,
+                                  child: _ProfileSectionItem(
                                     icon: Icons.person_outline,
-                                    name: _user.fullName),
+                                    name: _user.fullName,
+                                  ),
+                                ),
                                 _ProfileSectionItem(
                                     icon: Icons.addchart_rounded,
                                     name: _user.email),
@@ -87,17 +91,25 @@ class _ProfileSectionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 50,
-      width: double.infinity,
-      child: Row(
+      // width: double.infinity,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
         children: [
-          Icon(
-            icon,
-            size: 35,
-          ),
-          SizedBox(width: 10),
-          Text(
-            name,
-            style: GoogleFonts.roboto(fontSize: 22),
+          Row(
+            children: [
+              Icon(
+                icon,
+                size: 35,
+              ),
+              SizedBox(width: 10),
+              Text(
+                name,
+                overflow: TextOverflow.fade,
+                style: GoogleFonts.roboto(
+                  fontSize: 22,
+                ),
+              ),
+            ],
           ),
         ],
       ),

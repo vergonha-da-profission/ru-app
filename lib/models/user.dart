@@ -50,7 +50,8 @@ class User {
   }
 
   String get formatedCpf {
-    final stringCpf = this.cpf.toString();
+    final stringCpf =
+        this.cpf.toString().replaceAll('.', '').replaceAll('-', '');
     return stringCpf.substring(0, 3) +
         '.' +
         stringCpf.toString().substring(3, 6) +

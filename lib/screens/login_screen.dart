@@ -145,6 +145,8 @@ class MyCustomFormState extends State<MyCustomForm> {
               ),
             );
           });
+        } else if (state is LoginLoading) {
+          return Center(child: CircularProgressIndicator());
         }
 
         return Container(
