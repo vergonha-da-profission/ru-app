@@ -82,8 +82,6 @@ abstract class UserRepository {
 
     final a = User.fromJson(response.data);
 
-    print(a);
-
     return (a);
   }
 }
