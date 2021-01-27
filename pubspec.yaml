@@ -44,4 +44,5 @@ flutter:
     - assets/svg/bank.svg
     - assets/svg/outgoing_payments.svg
     - assets/svg/incoming_payments.svg
+    - assets/img/logo.png
 

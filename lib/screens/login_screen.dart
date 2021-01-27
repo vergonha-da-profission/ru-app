@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -90,12 +89,7 @@ class _MainImage extends StatelessWidget {
           height: _Const.imageWidth,
           width: _Const.imageHeight,
           child: Container(
-            child: CachedNetworkImage(
-              imageUrl: _Const.imageName,
-              progressIndicatorBuilder: (context, url, downloadProgress) =>
-                  CircularProgressIndicator(value: downloadProgress.progress),
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            ),
+            child: Image.asset('assets/img/logo.png'),
           ),
         ),
       ),
@@ -223,8 +217,6 @@ abstract class _Const {
 
   static const double imageHeight = 150;
   static const double imageWidth = 100;
-  static const String imageName =
-      'https://avatars0.githubusercontent.com/u/71855737?s=400&u=76011f1a14e05ffb46bcf1e701c374300c4d1b54&v=4';
   static const formMargin = const EdgeInsets.symmetric(horizontal: 40);
 
   static const String passwordHint = 'Escreva sua senha';
